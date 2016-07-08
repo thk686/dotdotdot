@@ -47,11 +47,13 @@ do_dots = function(f, ..., consume = FALSE, quote = FALSE, envir = parent.frame(
 {
   out = list()
   dots = list(...)
+  f = substitute(c(f))
+  f = deparse(f, nlines = 1)
+  f = parse_deparse(f)
   if (is.null(f) ||
-      (!all(sapply(c(f), check_function, envir = envir))))
-    stop("f must be one or more functions or function names")
-  fn = parse_deparse(deparse(substitute(c(f)), nlines = 1))
-  f = set_names(c(f), fn, keep_existing = TRUE)
+      (!all(sapply(f, check_function, envir = envir))))
+        stop("f must be one or more functions or function names")
+  f = set_names(f, f, keep_existing = TRUE)
   if (is.null(unlist(dots)))
     return(lapply(f, do.call, args = list(), quote = quote, envir = envir))
   if (is.null(names(dots)))
@@ -64,7 +66,7 @@ do_dots = function(f, ..., consume = FALSE, quote = FALSE, envir = parent.frame(
   for (fn in names(f))
   {
     ff = f[[fn]]
-    if (is_primitive(ff)) args = "..."
+    if (is_primitive(ff, envir = envir)) args = "..."
     else args = names(get_formals(ff, envir = envir))
     i = names(dots) %in% args
     dots_i = if(consume) dots[(!used) & i] else dots[i]

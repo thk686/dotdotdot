@@ -46,5 +46,12 @@ test_that("do_dots works with environments", {
   e$f = function(x) x
   e$g = function(y) y
   expect_equal(do_dots(c(f, "g"), x  = 1, y = 2, envir = e),
-               c(list(sum = 6, c = 1:3), empty_dots))
+               c(list(f = 1, g = 2), empty_dots))
+  expect_error(do_dots("sum", 1:10, envir = e))
 })
+
+test_that("do_dots works with named function list", {
+  expect_equal(do_dots(list(a = I), x = NA), c(list(a = I(NA)), empty_dots))
+  expect_equal(do_dots(list(a = I, b = I), x = NA), c(list(a = I(NA), b = I(NA)), empty_dots))
+})
+

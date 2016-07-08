@@ -1,15 +1,8 @@
-extract_enlisted = function(x)
+is_empty_string = function(x)
 {
-  x = stringr::str_extract(x, "\\([^\\(\\)]*\\)")
-  stringr::str_replace_all(x, "[\\(\\)]", "")
-}
-
-trim_quotes = function(x)
-{
-  quotes = "[\"'`]+"
-  x = stringr::str_trim(x)
-  pattern = stringr::str_c("\\A", quotes, "|", quotes, "\\Z")
-  stringr::str_replace_all(x, pattern, "")
+  if (!is.character(x))
+    stop("empty_string called on non-character object")
+  return(is.na(x) | (!nzchar(x)))
 }
 
 parse_deparse = function(x, trim_quotes = TRUE)
@@ -25,11 +18,18 @@ parse_deparse = function(x, trim_quotes = TRUE)
   return(x)
 }
 
-is_empty_string = function(x)
+trim_quotes = function(x)
 {
-  if (!is.character(x))
-    stop("empty_string called on non-character object")
-  return(is.na(x) | (!nzchar(x)))
+  quotes = "[\"'`]+"
+  x = stringr::str_trim(x)
+  pattern = stringr::str_c("\\A", quotes, "|", quotes, "\\Z")
+  stringr::str_replace_all(x, pattern, "")
+}
+
+extract_enlisted = function(x)
+{
+  x = stringr::str_extract(x, "\\([^\\(\\)]*\\)")
+  stringr::str_replace_all(x, "[\\(\\)]", "")
 }
 
 set_names = function(x, n, keep_existing = FALSE)
@@ -47,24 +47,13 @@ set_names = function(x, n, keep_existing = FALSE)
   return(x)
 }
 
-get_function = function(x, envir = parent.frame())
-  tryCatch(get(x, envir = envir, mode = "function"),
-           error = function(e) NA)
-
 check_function = function(x, envir = parent.frame())
 {
-  if (is.function(x) ||
-      is.function(get_function(x, envir = envir)))
-    return(TRUE)
-  return(FALSE)
-}
-
-is_primitive = function(x, envir = parent.frame())
-{
-  if (is.function(x)) return(is.primitive(x))
-  x = get_function(x, envir = envir)
-  if (is.function(x)) return(is.primitive(x))
-  return(FALSE)
+  if (!is.character(x))
+    x = deparse(substitute(x))
+  x = tryCatch(get(x, envir = envir, mode = "function"),
+               error = function(e) NA)
+  return(is.function(x))
 }
 
 get_formals = function(x, envir = parent.frame())
@@ -73,4 +62,12 @@ get_formals = function(x, envir = parent.frame())
     x = deparse(substitute(x))
   x = get(x, mode = "function", envir = envir)
   eval(formals(x), envir = envir)
+}
+
+is_primitive = function(x, envir = parent.frame())
+{
+  if (!is.character(x))
+    x = deparse(substitute(x))
+  x = get(x, mode = "function", envir = envir)
+  return(is.primitive(x))
 }
