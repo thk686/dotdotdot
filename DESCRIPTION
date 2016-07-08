@@ -1,4 +1,4 @@
-Package: dots
+Package: dotdotdot
 Type: Package
 Title: Assists with passing the elipsis argument to subfunctions
 Version: 0.1.0
@@ -7,11 +7,14 @@ Description: The dots package assists function author in passing the elipsis
     ("...") argument to sub-functions. The elipsis argument can be passed to a set
     of subfunctions and only the appropriate components of the elipsis argument will
     be passed to each function. The elipsis argument can also be passed sequentially
-    with each subfunction consuming elements of the argument set at each stage.
+    with each subfunction consuming elements of the argument-set at each stage.
 License: MIT + file LICENSE
 LazyData: TRUE
 Imports:
     stringr
 RoxygenNote: 5.0.1
-URL: https://github.com/thk686/dots
-BugReports: https://github.com/thk686/dots/issues
+URL: https://github.com/thk686/dotdotdot
+BugReports: https://github.com/thk686/dotdotdot/issues
+Suggests:
+    testthat,
+    covr
