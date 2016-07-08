@@ -65,7 +65,7 @@ do_dots = function(f, ..., consume = FALSE, quote = FALSE, envir = parent.frame(
   {
     ff = f[[fn]]
     if (is_primitive(ff)) args = "..."
-    else args = names(formals(ff, envir = envir))
+    else args = names(get_formals(ff, envir = envir))
     i = names(dots) %in% args
     dots_i = if(consume) dots[(!used) & i] else dots[i]
     j = names(dots_i) %in% "..."
