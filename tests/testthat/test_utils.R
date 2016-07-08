@@ -58,6 +58,9 @@ test_that("set_names works", {
   names(x) = c(letters[1:3], "", NA)
   x = set_names(x, rev(letters[1:5]))
   expect_equal(names(x), rev(letters[1:5]))
+  x = 1:3
+  names(x) = 1:3
+  expect_equal(set_names(1:3, 1:3, keep_existing = TRUE), x)
 })
 
 test_that("check_function works", {
